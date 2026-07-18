@@ -1,0 +1,693 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photography Quotation Generator</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #111827, #1f2937, #3b2f2f);
+      color: #111827;
+      padding: 28px;
+    }
+
+    .page-wrapper {
+      max-width: 1180px;
+      margin: auto;
+    }
+
+    .header {
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .header h1 {
+      font-size: 34px;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #d1d5db;
+      font-size: 15px;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 32px;
+      align-items: start;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.98);
+      border-radius: 28px;
+      padding: 32px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.4);
+    }
+
+
+    .header h1 {
+      font-size: 42px;
+      font-weight: 800;
+    }
+
+
+    .quotation-preview {
+      position: sticky;
+      top: 20px;
+      background: #fff;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 15px 40px rgba(0,0,0,.12);
+    }
+
+
+    .card {
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 22px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+    }
+
+    .section-title {
+      font-size: 20px;
+      color: #111827;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    label {
+      display: block;
+      font-weight: 650;
+      margin-bottom: 7px;
+      color: #374151;
+      font-size: 14px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+      transition: 0.2s ease;
+      background: #ffffff;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #b08968;
+      box-shadow: 0 0 0 3px rgba(176, 137, 104, 0.18);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1.3fr 0.6fr 0.8fr;
+      gap: 12px;
+      align-items: end;
+      margin-bottom: 12px;
+    }
+
+    .event-extra {
+      display: none;
+      margin-bottom: 16px;
+    }
+
+    .service-row {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 14px;
+      margin-bottom: 12px;
+    }
+
+    .service-header {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .service-header strong {
+      color: #1f2937;
+      font-size: 15px;
+    }
+
+    .service-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .service-fields small {
+      color: #6b7280;
+      font-size: 12px;
+    }
+
+    .checkbox-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .checkbox-title input {
+      width: auto;
+      transform: scale(1.15);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      padding: 13px 18px;
+      border-radius: 14px;
+      font-weight: 700;
+      transition: 0.2s ease;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #8b5e34, #b08968);
+      color: white;
+      flex: 1;
+    }
+
+    .btn-secondary {
+      background: #111827;
+      color: white;
+    }
+
+    .btn-light {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.18);
+    }
+
+    .quotation-preview {
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+    }
+
+    .quote-top {
+      background: linear-gradient(135deg, #111827, #3f2c22);
+      color: white;
+      padding: 22px;
+    }
+
+    .quote-top h2 {
+      margin-bottom: 6px;
+      font-size: 26px;
+    }
+
+    .quote-top p {
+      color: #e5e7eb;
+      font-size: 13px;
+    }
+
+    .quote-body {
+      padding: 22px;
+    }
+
+    .quote-info {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+      font-size: 14px;
+    }
+
+    .info-box {
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .info-box span {
+      display: block;
+      color: #6b7280;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+
+    th {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .total-box {
+      margin-top: 18px;
+      background: #111827;
+      color: white;
+      padding: 16px;
+      border-radius: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .note {
+      margin-top: 14px;
+      color: #6b7280;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .empty-state {
+      color: #6b7280;
+      text-align: center;
+      padding: 18px;
+      background: #f9fafb;
+      border-radius: 12px;
+      border: 1px dashed #d1d5db;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .container,
+      .grid-2,
+      .grid-3,
+      .service-fields,
+      .quote-info {
+        grid-template-columns: 1fr;
+      }
+
+      body {
+        padding: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="header">
+      <h1>Photography Quotation Generator</h1>
+      <p>Create a professional photography event quotation and download it as a PDF.</p>
+    </div>
+
+    <div class="container">
+      <form class="card" id="quotationForm">
+        <h2 class="section-title">Customer & Event Details</h2>
+
+        <div class="grid-2">
+          <div>
+            <label for="customerName">Customer Name</label>
+            <input id="customerName" type="text" placeholder="Enter customer name" required />
+          </div>
+          <div>
+            <label for="mobileNumber">Mobile Number</label>
+            <input id="mobileNumber" type="tel" placeholder="Enter mobile number" required />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="eventType">Event Type</label>
+            <select id="eventType" required>
+              <option value="">Select event type</option>
+              <option>Wedding</option>
+              <option>Engagement</option>
+              <option>Reception</option>
+              <option>Pre-Wedding Shoot</option>
+              <option>Post-Wedding Shoot</option>
+              <option>Haldi Ceremony</option>
+              <option>Mehendi Ceremony</option>
+              <option>Sangeet</option>
+              <option>Birthday Party</option>
+              <option>Baby Shower</option>
+              <option>Naming Ceremony</option>
+              <option>House Warming</option>
+              <option>Half Saree Function</option>
+              <option>Dhoti Ceremony</option>
+              <option>Cradle Ceremony</option>
+              <option>Anniversary</option>
+              <option>Corporate Event</option>
+              <option>Product Launch</option>
+              <option>School/College Event</option>
+              <option>Cultural Event</option>
+              <option>Religious Event</option>
+              <option>Political Event</option>
+              <option>Stage Show</option>
+              <option>Fashion Show</option>
+              <option>Portfolio Shoot</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="eventDate">Event Date</label>
+            <input id="eventDate" type="date" />
+          </div>
+        </div>
+
+        <div class="event-extra" id="otherEventBox">
+          <label for="otherEvent">Add Other Event Name</label>
+          <input id="otherEvent" type="text" placeholder="Example: Temple Function, Puberty Function, etc." />
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <label for="eventLocation">Event Location</label>
+            <input id="eventLocation" type="text" placeholder="Enter venue/location" />
+          </div>
+          <div>
+            <label for="advanceAmount">Advance Amount</label>
+            <input id="advanceAmount" type="number" min="0" value="0" />
+          </div>
+        </div>
+
+        <h2 class="section-title">Services, Quantity & Price</h2>
+        <div id="servicesList"></div>
+
+        <div class="btn-group">
+          <button type="button" class="btn-secondary" onclick="calculateQuotation()">Calculate Amount</button>
+          <button type="submit" class="btn-primary">Submit & Download PDF</button>
+          <button type="button" class="btn-light" onclick="resetFormData()">Reset</button>
+        </div>
+      </form>
+
+      <div class="card">
+        <h2 class="section-title">Quotation Preview</h2>
+        <div id="quotationPreview" class="quotation-preview">
+          <div class="quote-top">
+            <h2>Photography Quotation</h2>
+            <p>Professional event photography and videography package</p>
+          </div>
+          <div class="quote-body" id="quoteContent">
+            <div class="empty-state">Fill the details and click Calculate Amount to preview quotation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const services = [
+      { name: "Traditional Photographer", defaultPrice: 8000 },
+      { name: "Traditional Videographer", defaultPrice: 10000 },
+      { name: "Candid Photographer", defaultPrice: 15000 },
+      { name: "Candid Videographer", defaultPrice: 18000 },
+      { name: "Candid Photo + Video Both", defaultPrice: 30000 },
+      { name: "Audience Video", defaultPrice: 7000 },
+      { name: "Drone", defaultPrice: 15000 },
+      { name: "Live LED Walls", defaultPrice: 20000 },
+      { name: "Photo Album", defaultPrice: 12000 },
+      { name: "Video Editing", defaultPrice: 10000 },
+      { name: "Teaser Video", defaultPrice: 8000 },
+      { name: "Live Streaming", defaultPrice: 15000 },
+      { name: "Outdoor Photoshoot", defaultPrice: 12000 },
+      { name: "Instant Photo Print", defaultPrice: 5000 }
+    ];
+
+    const servicesList = document.getElementById("servicesList");
+    const eventType = document.getElementById("eventType");
+    const otherEventBox = document.getElementById("otherEventBox");
+
+    function buildServices() {
+      servicesList.innerHTML = "";
+      services.forEach((service, index) => {
+        const row = document.createElement("div");
+        row.className = "service-row";
+        row.innerHTML = `
+          <div class="service-header">
+            <label class="checkbox-title">
+              <input type="checkbox" class="service-check" data-index="${index}" />
+              <strong>${service.name}</strong>
+            </label>
+          </div>
+          <div class="service-fields">
+            <div>
+              <label>Quantity</label>
+              <input type="number" min="0" value="0" class="quantity" data-index="${index}" />
+            </div>
+            <div>
+              <label>Price</label>
+              <input type="number" min="0" value="${service.defaultPrice}" class="price" data-index="${index}" />
+            </div>
+            <div>
+              <label>Amount</label>
+              <input type="text" value="0" class="amount" data-index="${index}" readonly />
+            </div>
+          </div>
+        `;
+        servicesList.appendChild(row);
+      });
+    }
+
+    eventType.addEventListener("change", () => {
+      otherEventBox.style.display = eventType.value === "Other" ? "block" : "none";
+    });
+
+    document.addEventListener("input", (e) => {
+      if (e.target.classList.contains("quantity") || e.target.classList.contains("price")) {
+        const index = e.target.dataset.index;
+        const checkbox = document.querySelector(`.service-check[data-index="${index}"]`);
+        if (Number(e.target.value) > 0) checkbox.checked = true;
+        updateRowAmount(index);
+        calculateQuotation(false);
+      }
+    });
+
+    document.addEventListener("change", (e) => {
+      if (e.target.classList.contains("service-check")) {
+        const index = e.target.dataset.index;
+        const qty = document.querySelector(`.quantity[data-index="${index}"]`);
+        if (e.target.checked && Number(qty.value) === 0) qty.value = 1;
+        if (!e.target.checked) qty.value = 0;
+        updateRowAmount(index);
+        calculateQuotation(false);
+      }
+    });
+
+    function updateRowAmount(index) {
+      const qty = Number(document.querySelector(`.quantity[data-index="${index}"]`).value || 0);
+      const price = Number(document.querySelector(`.price[data-index="${index}"]`).value || 0);
+      document.querySelector(`.amount[data-index="${index}"]`).value = qty * price;
+    }
+
+    function getSelectedServices() {
+      return services.map((service, index) => {
+        const checked = document.querySelector(`.service-check[data-index="${index}"]`).checked;
+        const quantity = Number(document.querySelector(`.quantity[data-index="${index}"]`).value || 0);
+        const price = Number(document.querySelector(`.price[data-index="${index}"]`).value || 0);
+        const amount = quantity * price;
+        return { name: service.name, checked, quantity, price, amount };
+      }).filter(item => item.checked && item.quantity > 0 && item.price >= 0);
+    }
+
+    function currency(value) {
+      return "₹" + Number(value || 0).toLocaleString("en-IN");
+    }
+
+    function calculateQuotation(showAlert = true) {
+      const customerName = document.getElementById("customerName").value.trim();
+      const mobileNumber = document.getElementById("mobileNumber").value.trim();
+      const selectedEvent = eventType.value === "Other"
+        ? document.getElementById("otherEvent").value.trim()
+        : eventType.value;
+      const eventDate = document.getElementById("eventDate").value;
+      const eventLocation = document.getElementById("eventLocation").value.trim();
+      const advance = Number(document.getElementById("advanceAmount").value || 0);
+      const items = getSelectedServices();
+      const total = items.reduce((sum, item) => sum + item.amount, 0);
+      const balance = total - advance;
+
+      if (showAlert && items.length === 0) {
+        alert("Please select at least one service with quantity and price.");
+      }
+
+      const quoteBody = document.getElementById("quoteContent");
+
+      if (!customerName && !mobileNumber && !selectedEvent && items.length === 0) {
+        quoteBody.innerHTML = `<div class="empty-state">Fill the details and click Calculate Amount to preview quotation.</div>`;
+        return { customerName, mobileNumber, selectedEvent, eventDate, eventLocation, advance, items, total, balance };
+      }
+
+      const rows = items.map(item => `
+        <tr>
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${currency(item.price)}</td>
+          <td>${currency(item.amount)}</td>
+        </tr>
+      `).join("");
+
+      quoteBody.innerHTML = `
+        <div class="quote-info">
+          <div class="info-box"><span>Customer Name</span><strong>${customerName || "-"}</strong></div>
+          <div class="info-box"><span>Mobile Number</span><strong>${mobileNumber || "-"}</strong></div>
+          <div class="info-box"><span>Event Type</span><strong>${selectedEvent || "-"}</strong></div>
+          <div class="info-box"><span>Event Date</span><strong>${eventDate || "-"}</strong></div>
+          <div class="info-box"><span>Location</span><strong>${eventLocation || "-"}</strong></div>
+          <div class="info-box"><span>Quotation Date</span><strong>${new Date().toLocaleDateString("en-IN")}</strong></div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows || `<tr><td colspan="4">No services selected.</td></tr>`}
+          </tbody>
+        </table>
+
+        <table>
+          <tbody>
+            <tr><td><strong>Grand Total</strong></td><td style="text-align:right"><strong>${currency(total)}</strong></td></tr>
+            <tr><td>Advance Paid</td><td style="text-align:right">${currency(advance)}</td></tr>
+            <tr><td><strong>Balance Amount</strong></td><td style="text-align:right"><strong>${currency(balance)}</strong></td></tr>
+          </tbody>
+        </table>
+
+        <div class="total-box">
+          <span>Total Quotation</span>
+          <span>${currency(total)}</span>
+        </div>
+
+        <p class="note">
+          Note: This quotation is based on selected services, quantities, and prices. Final package details can be adjusted based on event duration, location, and customer requirements.
+        </p>
+      `;
+
+      return { customerName, mobileNumber, selectedEvent, eventDate, eventLocation, advance, items, total, balance };
+    }
+
+    async function downloadPDF(data) {
+      const quoteElement = document.getElementById("quotationPreview");
+      const canvas = await html2canvas(quoteElement, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: "#ffffff"
+      });
+
+      const imgData = canvas.toDataURL("image/png");
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pageWidth - 20;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let y = 10;
+
+      if (imgHeight <= pageHeight - 20) {
+        pdf.addImage(imgData, "PNG", 10, y, imgWidth, imgHeight);
+      } else {
+        let heightLeft = imgHeight;
+        let position = 10;
+        pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        while (heightLeft > 0) {
+          pdf.addPage();
+          position = heightLeft - imgHeight + 10;
+          pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+      }
+
+      const safeName = (data.customerName || "Customer").replace(/[^a-z0-9]/gi, "_");
+      pdf.save(`Photography_Quotation_${safeName}.pdf`);
+    }
+
+    function saveToLocalStorage(data) {
+      const quotations = JSON.parse(localStorage.getItem("photographyQuotations") || "[]");
+      quotations.push({
+        id: Date.now(),
+        createdAt: new Date().toISOString(),
+        ...data
+      });
+      localStorage.setItem("photographyQuotations", JSON.stringify(quotations));
+    }
+
+    document.getElementById("quotationForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const data = calculateQuotation(false);
+
+      if (!data.customerName || !data.mobileNumber || !data.selectedEvent) {
+        alert("Please enter customer name, mobile number, and event type.");
+        return;
+      }
+
+      if (data.items.length === 0) {
+        alert("Please select at least one service.");
+        return;
+      }
+
+      saveToLocalStorage(data);
+      await downloadPDF(data);
+      alert("Quotation saved in browser localStorage and PDF downloaded successfully.");
+    });
+
+    function resetFormData() {
+      document.getElementById("quotationForm").reset();
+      otherEventBox.style.display = "none";
+      buildServices();
+      document.getElementById("quoteContent").innerHTML = `<div class="empty-state">Fill the details and click Calculate Amount to preview quotation.</div>`;
+    }
+
+    buildServices();
+  </script>
+</body>
+</html>
